@@ -1,5 +1,6 @@
 let user
 let content
+let message
 
 function login() {
   let userName = prompt('Qual o seu nome?')
@@ -12,6 +13,7 @@ function login() {
   postPromise.catch(loginError)
 }
 
+//Leva para as constantes checagem de presença e atualização de mensagens
 function loginSucess(postResponse) {
   setInterval(checkPresence, 5000)
   console.log('Entramos')
@@ -33,6 +35,8 @@ function updateMessages() {
   serverPromise.then(showMessages)
 }
 
+//Altera o DOM para exibir as mensagens do chat
+//REVER FORMATAÇÃO DAS MENSAGENS EXIBIDAS
 function showMessages(messages) {
   content = messages.data
   document.querySelector('.chat').innerHTML = ''
@@ -45,11 +49,14 @@ function showMessages(messages) {
     } else if (content[i].type === 'message') {
       document.querySelector(
         '.chat'
-      ).innerHTML += `<div class="message normal"><span class="time">${content[i].time}</span>&nbsp<span class="bold">${content[i].from}</span>&nbsp<span class="bold">${content[i].to}</span>: ${content[i].text}</div>`
-    } else if (content[i].type === 'private_message') {
+      ).innerHTML += `<div class="message normal"><span class="time">(${content[i].time})</span>&nbsp<span class="bold">${content[i].from}</span>&nbsp<span class="bold">${content[i].to}</span>: ${content[i].text}</div>`
+    } else if (
+      content[i].type === 'private_message' &&
+      content[i].to === user.name //(Private)para mostrar apenas para o destinatário
+    ) {
       document.querySelector(
         '.chat'
-      ).innerHTML += `<div class="message private"><span class="time">${content[i].time}</span>&nbsp<span class="bold">${content[i].from}</span> &nbsp <span> reservadamente para</span> &nbsp <span class="bold">${content[i].to}</span>: ${content[i].text}</div>`
+      ).innerHTML += `<div class="message private"><span class="time">(${content[i].time})</span>&nbsp<span class="bold">${content[i].from}</span> &nbsp <span> reservadamente para</span> &nbsp <span class="bold">${content[i].to}</span>: ${content[i].text}</div>`
     }
   }
 
@@ -66,4 +73,20 @@ function loginError(errorStatus) {
   } else {
     alert('Algo inesperado aconteceu')
   }
+}
+
+function sendMessage(sendButton) {
+  message = { from: user.name, to: 'Todos', text: '', type: 'message' }
+  message.text = document.querySelector('input').value
+  document.querySelector('input').value = ''
+
+  let send = axios.post(
+    'https://mock-api.driven.com.br/api/v6/uol/messages',
+    message
+  )
+  send.then(deuCerto)
+}
+
+function deuCerto() {
+  console.log('Mensagem enviada')
 }
