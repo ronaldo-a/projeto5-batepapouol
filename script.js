@@ -15,10 +15,8 @@ function login() {
 function loginSucess(postResponse) {
   setInterval(checkPresence, 5000)
   console.log('Entramos')
-  let serverPromise = axios.get(
-    'https://mock-api.driven.com.br/api/v6/uol/messages'
-  )
-  serverPromise.then(showMessages)
+
+  setInterval(updateMessages, 3000)
 }
 
 function checkPresence() {
@@ -28,24 +26,34 @@ function checkPresence() {
   )
 }
 
+function updateMessages() {
+  let serverPromise = axios.get(
+    'https://mock-api.driven.com.br/api/v6/uol/messages'
+  )
+  serverPromise.then(showMessages)
+}
+
 function showMessages(messages) {
   content = messages.data
+  document.querySelector('.chat').innerHTML = ''
 
   for (let i = 0; i < content.length; i++) {
     if (content[i].type === 'status') {
       document.querySelector(
         '.chat'
-      ).innerHTML += `<div class="message state">${content[i].time} ${content[i].from} ${content[i].type}</div>`
+      ).innerHTML += `<div class="message state"><span class="time">(${content[i].time})</span> &nbsp <span class="bold">${content[i].from}</span> &nbsp${content[i].text}</div>`
     } else if (content[i].type === 'message') {
       document.querySelector(
         '.chat'
-      ).innerHTML += `<div class="message normal">${content[i].time} ${content[i].from} para ${content[i].to}: ${content[i].text}</div>`
+      ).innerHTML += `<div class="message normal"><span class="time">${content[i].time}</span>&nbsp<span class="bold">${content[i].from}</span>&nbsp<span class="bold">${content[i].to}</span>: ${content[i].text}</div>`
     } else if (content[i].type === 'private_message') {
       document.querySelector(
         '.chat'
-      ).innerHTML += `<div class="message private">${content[i].time} ${content[i].from} reservadamente para ${content[i].to}: ${content[i].text}</div>`
+      ).innerHTML += `<div class="message private"><span class="time">${content[i].time}</span>&nbsp<span class="bold">${content[i].from}</span> &nbsp <span> reservadamente para</span> &nbsp <span class="bold">${content[i].to}</span>: ${content[i].text}</div>`
     }
   }
+
+  document.querySelector('.chat').lastChild.scrollIntoView()
 }
 
 function loginError(errorStatus) {
