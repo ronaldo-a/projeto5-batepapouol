@@ -97,7 +97,11 @@ function loginError(errorStatus) {
 }
 
 document.addEventListener('keypress', function (e) {
-  if (e.key === 'Enter') {
+  if (
+    e.key === 'Enter' &&
+    document.querySelector('.loginPage.hidden') &&
+    document.querySelector('.loadingPage.hidden')
+  ) {
     sendMessage()
   }
 })
