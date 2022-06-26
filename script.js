@@ -3,19 +3,26 @@ let user
 let content
 let message
 
+//Página de Login (Página inicial)
 function loginPage() {
-  document.querySelector('.loadingPage').classList.remove('hidden')
-  document.querySelector('.loginPage').classList.add('hidden')
-  userName = document.querySelector('.loginPage input').value
-  setTimeout(loadingPage, 2000)
+  if (document.querySelector('.loginPage input').value !== '') {
+    document.querySelector('.loadingPage').classList.remove('hidden')
+    document.querySelector('.loginPage').classList.add('hidden')
+    userName = document.querySelector('.loginPage input').value
+    setTimeout(loadingPage, 2000)
+  } else {
+    alert('Nome de usuário não pode ser vazio')
+  }
 }
 
+//Página que mostra o "carregando" (Ativado pelo clique no buttom "entrar")
 function loadingPage() {
   document.querySelector('.operational').classList.remove('hidden')
   document.querySelector('.loadingPage').classList.add('hidden')
   login()
 }
 
+//Login propriamente dito - POST com o nome do usuário
 function login() {
   user = { name: userName }
   let postPromise = axios.post(
@@ -50,7 +57,6 @@ function updateMessages() {
 }
 
 //Altera o DOM para exibir as mensagens do chat
-//REVER FORMATAÇÃO DAS MENSAGENS EXIBIDAS
 function showMessages(messages) {
   content = messages.data
   document.querySelector('.chat').innerHTML = ''
@@ -77,29 +83,34 @@ function showMessages(messages) {
   document.querySelector('.chat').lastChild.scrollIntoView()
 }
 
+//Caso o login não funcione (reinicia página)
 function loginError(errorStatus) {
   let loginStatus = errorStatus.response.status
   if (loginStatus === 400) {
     alert(
       'Já existe um usuário com esse nome. Favor inserir um novo nome de usuário.'
     )
-    login()
+    window.location.reload()
   } else {
     alert('Algo inesperado aconteceu')
   }
 }
 
 function sendMessage() {
-  message = { from: user.name, to: 'Todos', text: '', type: 'message' }
-  message.text = document.querySelector('.bottom input').value
-  document.querySelector('.bottom input').value = ''
+  if (document.querySelector('.bottom input').value !== '') {
+    message = { from: user.name, to: 'Todos', text: '', type: 'message' }
+    message.text = document.querySelector('.bottom input').value
+    document.querySelector('.bottom input').value = ''
 
-  let send = axios.post(
-    'https://mock-api.driven.com.br/api/v6/uol/messages',
-    message
-  )
-  send.then(sendSucess)
-  send.catch(sendFail)
+    let send = axios.post(
+      'https://mock-api.driven.com.br/api/v6/uol/messages',
+      message
+    )
+    send.then(sendSucess)
+    send.catch(sendFail)
+  } else {
+    alert('Impossível enviar mensagem vazia')
+  }
 }
 
 //Tirar da versão final (apenas para teste)
@@ -108,6 +119,6 @@ function sendSucess() {
 }
 
 function sendFail() {
-  console.log('Usuário deslogado')
+  alert('Usuário deslogado')
   window.location.reload()
 }
