@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap');
 
 /**Página de entrada**/
-.loginPage {
+.loginPage, .loadingPage {
 	width: 100vw;
 	height: 100vh;
 
@@ -11,7 +11,7 @@
 	background-color: white;
 }
 
-.loginPage img {
+.loginPage img, .loadingPage img {
 	width: 130px;
 	height: 92px;
 
@@ -51,6 +51,27 @@
 	color: #696969;
 }
 
+.loadingPage img {
+	margin-top: 72px;
+	margin-bottom: 30px;
+}
+
+.loadingPage .gif {
+  width: 250px;
+	height: auto;
+
+	margin-top: 0;
+	margin-bottom: 15px;
+}
+
+.loadingLogin p {
+  font-family: 'Roboto', sans-serif;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 25px;
+	text-align: center;
+	color: black;
+}
 
 /** Chat normal **/
 body {

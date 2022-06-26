@@ -4,9 +4,15 @@ let content
 let message
 
 function loginPage() {
-  document.querySelector('.operational').classList.remove('hidden')
+  document.querySelector('.loadingPage').classList.remove('hidden')
   document.querySelector('.loginPage').classList.add('hidden')
   userName = document.querySelector('.loginPage input').value
+  setTimeout(loadingPage, 2000)
+}
+
+function loadingPage() {
+  document.querySelector('.operational').classList.remove('hidden')
+  document.querySelector('.loadingPage').classList.add('hidden')
   login()
 }
 
