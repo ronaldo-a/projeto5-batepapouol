@@ -96,6 +96,12 @@ function loginError(errorStatus) {
   }
 }
 
+document.addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    sendMessage()
+  }
+})
+
 function sendMessage() {
   if (document.querySelector('.bottom input').value !== '') {
     message = { from: user.name, to: 'Todos', text: '', type: 'message' }
