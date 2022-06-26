@@ -1,9 +1,16 @@
+let userName
 let user
 let content
 let message
 
+function loginPage() {
+  document.querySelector('.operational').classList.remove('hidden')
+  document.querySelector('.loginPage').classList.add('hidden')
+  userName = document.querySelector('.loginPage input').value
+  login()
+}
+
 function login() {
-  let userName = prompt('Qual o seu nome?')
   user = { name: userName }
   let postPromise = axios.post(
     'https://mock-api.driven.com.br/api/v6/uol/participants',
@@ -13,7 +20,7 @@ function login() {
   postPromise.catch(loginError)
 }
 
-//Leva para as constantes checagem de presença e atualização de mensagens
+//Leva para as constantes checagens de presença e atualização de mensagens
 function loginSucess(postResponse) {
   setInterval(checkPresence, 5000)
   console.log('Entramos')
@@ -28,6 +35,7 @@ function checkPresence() {
   )
 }
 
+//GET das mensagens do servidor e direciona para renderizar
 function updateMessages() {
   let serverPromise = axios.get(
     'https://mock-api.driven.com.br/api/v6/uol/messages'
@@ -45,11 +53,11 @@ function showMessages(messages) {
     if (content[i].type === 'status') {
       document.querySelector(
         '.chat'
-      ).innerHTML += `<div class="message state"><span class="time">(${content[i].time})</span> &nbsp <span class="bold">${content[i].from}</span> &nbsp${content[i].text}</div>`
+      ).innerHTML += `<div class="message state"><p><span class="time">(${content[i].time})</span> <span class="bold">${content[i].from}</span> <span>${content[i].text}</span></p></div>`
     } else if (content[i].type === 'message') {
       document.querySelector(
         '.chat'
-      ).innerHTML += `<div class="message normal"><span class="time">(${content[i].time})</span>&nbsp<span class="bold">${content[i].from}</span>&nbsp<span class="bold">${content[i].to}</span>: ${content[i].text}</div>`
+      ).innerHTML += `<div class="message normal"><p><span class="time">(${content[i].time})</span> <span class="bold">${content[i].from}</span> para <span class="bold">${content[i].to}</span>: ${content[i].text}</p></div>`
     } else if (
       content[i].type === 'private_message' &&
       content[i].to === user.name //(Private)para mostrar apenas para o destinatário
@@ -75,18 +83,25 @@ function loginError(errorStatus) {
   }
 }
 
-function sendMessage(sendButton) {
+function sendMessage() {
   message = { from: user.name, to: 'Todos', text: '', type: 'message' }
-  message.text = document.querySelector('input').value
-  document.querySelector('input').value = ''
+  message.text = document.querySelector('.bottom input').value
+  document.querySelector('.bottom input').value = ''
 
   let send = axios.post(
     'https://mock-api.driven.com.br/api/v6/uol/messages',
     message
   )
-  send.then(deuCerto)
+  send.then(sendSucess)
+  send.catch(sendFail)
 }
 
-function deuCerto() {
+//Tirar da versão final (apenas para teste)
+function sendSucess() {
   console.log('Mensagem enviada')
+}
+
+function sendFail() {
+  console.log('Usuário deslogado')
+  window.location.reload()
 }
